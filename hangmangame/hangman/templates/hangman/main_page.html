@@ -1,0 +1,53 @@
+{% extends "hangman/base.html" %} 
+
+{% load crispy_forms_tags %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'hangman/main_page.css' %}">
+{% endblock styles %}
+{% block js %}
+    <script src="{% static 'hangman/render_forms.js' %}"></script>
+{% endblock js %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <a class="navbar-brand" href="#"> Hangman </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> Start a Game </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> Statistics </a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" href="#"> {{request.user.username}} </a>
+                    </li>
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" href="{% url 'profiles:logout' %}"> Logout </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" id="id-login-button" login-form-url="{% url 'profiles:login' %}"> Login </a>
+                    </li>
+                    <div id="id-login-form-fields" class="login-form-fields" style="display: none;"></div>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="id-register-button" register-form-url="{% url 'profiles:signup' %}"> Sign Up </a>
+                    </li>
+                    <div id="id-register-form-fields" class="register-form-fields"></div>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+{% endblock navbar %}
+
+{% block content %}
+    <div id="id-main-container" class="main-container">
+        <h1>Welcome to Hangman Game!</h1>
+    </div>
+{% endblock content %}

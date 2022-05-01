@@ -1,0 +1,15 @@
+{% load crispy_forms_tags %}
+
+<div id="id-container-form" class="container-form">
+    <form id="id-register-form" action="{% url 'profiles:signup' %}" method='POST'>{% csrf_token %}
+        {{form|crispy}}
+        <input id="id-submit-button" type='submit' class='btn btn-success' value='Register'/>
+    </form>
+</div>
+
+<style>
+    .btn {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+</style>

@@ -23,6 +23,18 @@ $(document).ready(function(){
       }
     });
   });
+
+  $("#id-start-game-button").click(function () {
+    var url = $("#id-start-game-button").attr("start-game-form-url");
+
+    $.ajax({
+      url: url,
+      success: function (data) {
+        $("#id-start-game-form-fields").html(data);
+        document.getElementById("id-start-game-form-fields").style.display = "block";
+      }
+    });
+  });
 })
 
 $(document).click(function(e) {
@@ -35,6 +47,11 @@ $(document).click(function(e) {
   {
       $("#id-register-form-fields").hide();
   }
+
+  if (e.target.id != 'id-start-game-form-fields' && !$('#id-start-game-form-fields').find(e.target).length)
+  {
+      $("#id-start-game-form-fields").hide();
+  }
 });
 
 
@@ -46,7 +63,8 @@ $(document).on('submit', '#id-login-form', function(e) {
     url: this.action,
     data: $(this).serialize(),
     success: function(data) {
-      $('body').replaceWith(data);
+      //$('body').replaceWith(data);
+      window.location.reload();
     },
     error: function(data) {
       var div_error = document.createElement("div");
@@ -67,7 +85,8 @@ $(document).on('submit', '#id-register-form', function(e) {
     url: this.action,
     data: $(this).serialize(),
     success: function(data) {
-      $('body').replaceWith(data);
+      //$('body').replaceWith(data);
+      window.location.reload();
     },
     error: function(data) {
       $.each(data.responseJSON.status, function(index, value) {
@@ -90,3 +109,17 @@ $(document).on('submit', '#id-register-form', function(e) {
     }
   });
 });
+
+// $(document).on('submit', '#id-start-game-form', function(e) {
+//   e.preventDefault();
+
+//   $.ajax({
+//     type: "POST",
+//     url: this.action,
+//     data: $(this).serialize(),
+//     success: function(data) {
+//     },
+//     error: function(data) {
+//     }
+//   });
+// });

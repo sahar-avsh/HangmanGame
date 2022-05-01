@@ -16,6 +16,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
+from .forms import HangmanGameModelForm
+from .models import HangmanGame, HangmanWord
+
+from random import randint
+
 # Create your views here.
 class AjaxableResponseMixin(object):
     def form_invalid(self, form):
@@ -37,3 +42,27 @@ class AjaxableResponseMixin(object):
 
 class MainView(TemplateView):
     template_name = 'hangman/main_page.html'
+
+class StartGameView(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
+    template_name = 'hangman/start_game.html'
+    model = HangmanGame
+    form_class = HangmanGameModelForm
+
+    def post(self, *args, **kwargs):
+        self.object = None
+        return super().post(self.request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if form.cleaned_data['word_source'] == 'D':
+            count = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty']).count()
+            word = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty'])[randint(0, count - 1)]
+            form.instance.guess_word = word
+        return super().form_valid(form)
+
+class GameDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'hangman/game_detail.html'
+    model = HangmanGame
+
+    def get_object(self):
+        id_ = self.kwargs.get('id')
+        return get_object_or_404(HangmanGame, id=id_)

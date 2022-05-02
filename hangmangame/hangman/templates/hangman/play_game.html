@@ -1,0 +1,52 @@
+{% extends 'hangman/base.html' %}
+
+{% load static %}
+{% block styles %}
+    <style>
+        .main {
+            margin: 10px;
+        }
+    </style>
+{% endblock styles %}
+{% block js %}
+    <script src="{% static 'hangman/countdown.js' %}"></script>
+    <script src="{% static 'hangman/play_game.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+    Don't Let The Man Hanging!
+{% endblock title %}
+
+{% block content %}
+    <div class="main">
+        <h1> Save the Man From Hanging! </h1>
+        <h2 id="id-word-status" style="font-size: 60px;"> {{ current_status|upper }} </h2>
+
+        {% comment %} <div class="buttons">
+            <button class="btn btn-info" id="id-timer" data-time-allowed="{{object.time_allowed}}">Start Timer!</button>
+            <button class="btn btn-danger" id="id-reset-timer">Restart Timer!</button>
+        </div> {% endcomment %}
+
+        <button class="btn btn-warning" id="id-timer" data-time-allowed="{{object.time_allowed}}"> <a id="id-clock"></a> </button>
+        <button class="btn btn-danger" id="id-reset-timer">Restart Clock</button>
+
+        <p id="countdown"> </p>
+
+        <p style="font-size: 22px;"> <u> Available letters: </u> </p>
+        {% for letter in available_letters %}
+            <button class="btn btn-primary" update-letters-url="{% url 'hangman:play_game' id=object.id %}" id="{{letter}}" style="font-size: 16px;"> {{letter|upper}} </button>
+        {% empty %}
+        {% endfor %}
+
+        <p id="id-used-letters" style="font-size: 22px;"> <u> Used letters: </u> </p>
+        {% for hit in hits %}
+            <button class="btn btn-success"> {{hit|upper}} </button>
+        {% empty %}
+        {% endfor %}
+
+        {% for miss in misses %}
+            <button class="btn btn-danger"> {{miss|upper}} </button>
+        {% empty %}
+        {% endfor %}
+    </div>
+{% endblock content %}

@@ -18,6 +18,43 @@
   <body>
 
     {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <a class="navbar-brand" href="#"> Hangman </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" id="id-start-game-button" start-game-form-url="{% url 'hangman:start_game' %}"> Start a Game </a>
+                    </li>
+                    <div id="id-start-game-form-fields" class="start-game-form-fields" style="display: none;"></div>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="id-statistics-button"> Statistics </a>
+                    </li>
+
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" href="#"> {{request.user.username}} </a>
+                    </li>
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" href="{% url 'profiles:logout' %}"> Logout </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item" style="float:right">
+                        <a class="nav-link" id="id-login-button" login-form-url="{% url 'profiles:login' %}"> Login </a>
+                    </li>
+                    <div id="id-login-form-fields" class="login-form-fields" style="display: none;"></div>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="id-register-button" register-form-url="{% url 'profiles:signup' %}"> Sign Up </a>
+                    </li>
+                    <div id="id-register-form-fields" class="register-form-fields"></div>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
     {% endblock navbar%}
 
     {% if messages %}

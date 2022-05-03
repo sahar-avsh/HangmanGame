@@ -110,16 +110,24 @@ $(document).on('submit', '#id-register-form', function(e) {
   });
 });
 
-// $(document).on('submit', '#id-start-game-form', function(e) {
-//   e.preventDefault();
+$(document).on('submit', '#id-start-game-form', function(e) {
+  e.preventDefault();
 
-//   $.ajax({
-//     type: "POST",
-//     url: this.action,
-//     data: $(this).serialize(),
-//     success: function(data) {
-//     },
-//     error: function(data) {
-//     }
-//   });
-// });
+  $.ajax({
+    type: "POST",
+    url: this.action,
+    data: $(this).serialize(),
+    success: function(data) {
+      window.location.href = data.url;
+    },
+    error: function(data) {
+      console.log(data);
+      var div_error = document.createElement("div");
+      $(div_error).css('margin-bottom', '0px');
+      $(div_error).text(data.responseJSON.guesses_allowed[0]);
+      div_error.classList.add("alert");
+      div_error.classList.add("alert-dark");
+      $('.container-form').append(div_error);
+    }
+  });
+});

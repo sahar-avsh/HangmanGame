@@ -1,0 +1,31 @@
+{% extends 'hangman/base.html' %}
+
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'hangman/game_finished.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'hangman/main_page.css' %}">
+{% endblock styles %}
+{% block js %}
+    <script src="{% static 'hangman/render_forms.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+    {% if result %}
+        SAVED
+    {% else %}
+        HANGED
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+
+    {% if result %}
+        <h2>You have saved the person</h2>
+    {% else %}
+        <div class="lost">
+            <h2>PERSON GOT HANGED!</h2>
+            <p>Word was {{object.guess_word}} </p>
+        </div>
+    {% endif %}
+
+{% endblock content %}

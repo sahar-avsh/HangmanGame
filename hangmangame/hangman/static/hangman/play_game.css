@@ -1,0 +1,14 @@
+.main {
+    display: flex;
+}
+
+.left {
+    margin-left: 10px;
+    width: 1200px;
+}
+
+.right {
+    text-align: center;
+    width: 800px;
+    height: 700px;
+}

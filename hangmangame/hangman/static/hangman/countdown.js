@@ -15,49 +15,73 @@ function get_countdown_status(time_remaining) {
 //var canCount = true;
 //localStorage.setItem("canCount", canCount);
 
+var time_allowed = $("#id-timer").attr("data-time-allowed");
+if (typeof time_allowed !== "undefined") {
+    var initial_value = timeToMilliSeconds(time_allowed); 
+}
+
+
 $(document).ready(function() {
-    var canCount = true
-    $("#id-clock").html(canCount?"Pause Clock":"Continue Clock");
-
-    var x;
-    var duration = localStorage.getItem("duration");
-
-    if (!duration) {
-        var time_allowed = $("#id-timer").attr("data-time-allowed");
-        duration = timeToMilliSeconds(time_allowed);
-    }
-
-    $("#countdown").html(get_countdown_status(duration));
-
-    // Update the count down every 1 second
-    x = setInterval(function() {
-        if (canCount) {
-            duration = duration - 1000;
-            localStorage.setItem("duration", duration);
-            // Display the result in the element with id="countdown"
-            $("#countdown").html(get_countdown_status(duration));
-    
-            // If the count down is finished, write some text
-            if (duration < 0) {
-                clearInterval(x);
-                localStorage.removeItem("duration");
-                document.getElementById("countdown").innerHTML = "YOU HAVE LET THE MAN HANG!!!!!";
-            }
-        }
-    }, 1000);
-
-    $("#id-timer").click(function() {
-        canCount = !canCount;
+    if (time_allowed !== "None") {
+        var canCount = true
         $("#id-clock").html(canCount?"Pause Clock":"Continue Clock");
-    });
 
-    $("#id-reset-timer").click(function() {
-    duration = timeToMilliSeconds($("#id-timer").attr("data-time-allowed"));
-    localStorage.setItem("duration", duration);
-    $("#countdown").html(get_countdown_status(duration));
-    });
+        var x;
+        var duration = localStorage.getItem("duration");
+
+        if (!duration) {
+            duration = initial_value;
+            localStorage.setItem("duration", initial_value);
+        }
+
+        $("#countdown").html(get_countdown_status(duration));
+
+        // function startTimer() {
+        if (localStorage.getItem("duration")) {
+            // Update the count down every 1 second
+            x = setInterval(function() {
+                if (canCount) {
+                    duration = duration - 1000;
+                    localStorage.setItem("duration", duration);
+                    // Display the result in the element with id="countdown"
+                    $("#countdown").html(get_countdown_status(duration));
+            
+                    // If the count down is finished, write some text
+                    if (duration < 0) {
+                        clearInterval(x);
+                        localStorage.removeItem("duration");
+                        document.getElementById("countdown").innerHTML = "YOU HAVE LET THE MAN HANG!!!!!";
+                    }
+                }
+            }, 1000);
+        }
+        // }
+
+        // $("#id-start-timer").click(function() {
+        //     startTimer();
+        //     $(this).hide();
+        //     localStorage.setItem("start-display", "none");
+        // });
+
+        $("#id-timer").click(function() {
+            canCount = !canCount;
+            $("#id-clock").html(canCount?"Pause Clock":"Continue Clock");
+        });
+
+        $("#id-reset-timer").click(function() {
+            duration = initial_value;
+            localStorage.setItem("duration", duration);
+            $("#countdown").html(get_countdown_status(duration));
+        });
+    }
+    // var start = localStorage.getItem("start-display");
+    // if (start) {
+    //     document.getElementById("id-start-timer").style.display = start;
+    //     startTimer();
+    // } else {
+    //     document.getElementById("id-start-timer").style.display = "";
+    // }
 })
-
 
 
 

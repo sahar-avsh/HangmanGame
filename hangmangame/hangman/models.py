@@ -42,8 +42,8 @@ class HangmanGame(models.Model):
     )
     guess_word = models.CharField(max_length=100)
     time_allowed = models.DurationField(null=True)
-    guesses_allowed = models.IntegerField(default=7, validators=[
-        MaxValueValidator(7),
+    guesses_allowed = models.IntegerField(default=6, validators=[
+        MaxValueValidator(6),
         MinValueValidator(1)
     ])
     started_date = models.DateTimeField(auto_now_add=True)

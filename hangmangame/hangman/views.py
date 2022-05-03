@@ -16,11 +16,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
+from django.core.exceptions import PermissionDenied
+
 from .forms import HangmanGameModelForm
 from .models import HangmanGame, HangmanWord
-from .utils import get_current_status, is_finished, get_available_letters, classify_guessed_letters
+from .utils import (
+    get_current_status,
+    is_finished, 
+    get_available_letters, 
+    classify_guessed_letters, 
+    update_guesses_remaining,
+    serve_correct_image
+)
 
 from random import randint
+import string
 
 # Create your views here.
 class AjaxableResponseMixin(object):
@@ -36,6 +46,7 @@ class AjaxableResponseMixin(object):
         if self.request.is_ajax():
             data = {
                 'id': self.object.id,
+                'url': reverse('hangman:play_game', kwargs={'id': self.object.id})
             }
             return JsonResponse(data)
         else:
@@ -60,7 +71,7 @@ class StartGameView(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
             form.instance.guess_word = word
         return super().form_valid(form)
 
-class GameUpdateView(LoginRequiredMixin, AjaxableResponseMixin, UpdateView):
+class GameUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'hangman/play_game.html'
     model = HangmanGame
     fields = ['guessed_letters']
@@ -78,26 +89,57 @@ class GameUpdateView(LoginRequiredMixin, AjaxableResponseMixin, UpdateView):
             if letter_guessed not in all_guessed_letters:
                 all_guessed_letters += letter_guessed
                 HangmanGame.objects.filter(id=self.object.id).update(guessed_letters=all_guessed_letters)
+                guesses_remaining = update_guesses_remaining(self.object.guesses_allowed, self.object.guess_word, letter_guessed)
+                HangmanGame.objects.filter(id=self.object.id).update(guesses_allowed=guesses_remaining)
 
-                # letter_classification = classify_guessed_letter(letter_guessed, self.object.guess_word)
-                is_game_finished = is_finished(self.object.guessed_letters, self.object.guess_word)
-                if is_game_finished:
-                    return JsonResponse({'finished': True}, status=200, content_type='application/json')
-                # current_status = get_current_status(self.object.guessed_letters, self.object.guess_word)
+                is_game_finished, is_won = is_finished(all_guessed_letters, self.object.guess_word, guesses_remaining)
+                if is_game_finished and is_won:
+                    HangmanGame.objects.filter(id=self.object.id).update(result=HangmanGame.WIN)
+                elif is_game_finished and not is_won:
+                    HangmanGame.objects.filter(id=self.object.id).update(result=HangmanGame.LOSS)
 
-                # return JsonResponse({
-                #     'classification': letter_classification,
-                #     'is_game_finished': is_game_finished,
-                #     'current_status': current_status
-                # }, status=200, content_type='application/json')
+                current_status = get_current_status(all_guessed_letters, self.object.guess_word)
+                hit, miss = classify_guessed_letters(all_guessed_letters, self.object.guess_word)
+
+                image = serve_correct_image(guesses_remaining)
+
+                return JsonResponse({
+                    'hits': hit,
+                    'misses': miss,
+                    'is_game_finished': is_game_finished,
+                    'current_status': current_status,
+                    'guesses_remaining': guesses_remaining,
+                    'image': image
+                }, status=200, content_type='application/json')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # context['available_letters'] = string.ascii_lowercase
         context['current_status'] = get_current_status(self.object.guessed_letters, self.object.guess_word)
         context['available_letters'] = get_available_letters(self.object.guessed_letters)
         hit, miss = classify_guessed_letters(self.object.guessed_letters, self.object.guess_word)
         context['hits'] = hit
         context['misses'] = miss
-        # context['is_finished'] = is_finished(self.object.guessed_letters, self.object.guess_word)
+        context['is_finished'] = is_finished(self.object.guessed_letters, self.object.guess_word, self.object.guesses_allowed)
+        return context
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.result:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+class GameFinishedView(LoginRequiredMixin, TemplateView):
+    template_name = 'hangman/game_finished.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        id_ = self.kwargs.get('id')
+        game = HangmanGame.objects.get(id=id_)
+        context['object'] = game
+        if game.result == 'W':
+            context['result'] = True
+        else:
+            context['result'] = False
         return context

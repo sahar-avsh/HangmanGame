@@ -1,7 +1,10 @@
 import string
 
-def is_finished(guessed_letters, word):
-    return set(word).issubset(set(guessed_letters))
+def is_finished(guessed_letters, word, guesses_remaining):
+    is_guessed = set(word).issubset(set(guessed_letters))
+    is_out_of_guesses = guesses_remaining == 0
+    is_over = is_guessed or is_out_of_guesses
+    return is_over, is_guessed
 
 def get_current_status(guessed_letters, word):
     status = ''
@@ -24,3 +27,20 @@ def classify_guessed_letters(guessed_letters, word):
         else:
             miss.append(letter)
     return hit, miss
+
+def update_guesses_remaining(guesses_remaining, word, letter):
+    if letter not in word:
+        guesses_remaining = guesses_remaining - 1
+    return guesses_remaining
+
+def serve_correct_image(guesses_remaining):
+    my_dict = {
+        6: "1",
+        5: "2",
+        4: "3",
+        3: "4",
+        2: "5",
+        1: "6",
+        0: "7",
+    }
+    return my_dict[guesses_remaining]

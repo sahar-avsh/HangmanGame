@@ -48,11 +48,21 @@ class HangmanGame(models.Model):
         MinValueValidator(1)
     ])
     started_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     result = models.CharField(max_length=1, choices=RESULT_CHOICES, null=True)
     guessed_letters = models.CharField(max_length=26, default='')
 
     def __str__(self):
         return self.guess_word
+
+    def get_guess_word_difficulty(self):
+        score = len(self.guess_word) + len(set(self.guess_word))
+        if score > 15:
+            return 'H'
+        elif score > 10:
+            return 'M'
+        else:
+            return 'E'
 
     def get_absolute_url(self):
         return reverse('hangman:play_game', kwargs={'id': self.id})

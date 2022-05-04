@@ -86,7 +86,7 @@ class MainView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            unfinished_games = HangmanGame.objects.filter(player=self.request.user.profile).filter(result__isnull=True)
+            unfinished_games = HangmanGame.objects.filter(player=self.request.user.profile).filter(result__isnull=True).order_by('-updated_date')
             context['unfinished_games'] = unfinished_games
             statuses = [get_current_status(game.guessed_letters, game.guess_word) for game in unfinished_games]
             context['statuses'] = statuses
@@ -173,6 +173,27 @@ class UpdateTimeRemainingAjaxView(LoginRequiredMixin, View):
         #     obj.time_allowed = time_remaining_formatted
         #     obj.save()
         return JsonResponse({'saving': 'Done'}, status=200, content_type='application/json')
+
+class StatisticsDetailView(LoginRequiredMixin, TemplateView):
+    template_name = 'hangman/game_statistics.html'
+
+    def calc_total_score(self, wins, losses):
+        pass
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        wins = HangmanGame.objects.filter(player=self.request.user.profile).filter(result='W')
+        losses = HangmanGame.objects.filter(player=self.request.user.profile).filter(result='L')
+        context['wins'] = wins
+        context['losses'] = losses
+        context['wh'] = len([win for win in wins if win.get_guess_word_difficulty() == 'H'])
+        context['wm'] = len([win for win in wins if win.get_guess_word_difficulty() == 'M'])
+        context['we'] = len([win for win in wins if win.get_guess_word_difficulty() == 'E'])
+        context['lh'] = len([loss for loss in losses if loss.get_guess_word_difficulty() == 'H'])
+        context['lm'] = len([loss for loss in losses if loss.get_guess_word_difficulty() == 'M'])
+        context['le'] = len([loss for loss in losses if loss.get_guess_word_difficulty() == 'E'])
+        context['total'] = self.calc_total_score(wins, losses)
+        return context
 
 class GameDetailView(LoginRequiredMixin, DetailView):
     model = HangmanGame

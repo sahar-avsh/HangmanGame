@@ -6,7 +6,8 @@ from .views import (
   StartGameView,
   GameFinishedView,
   MakeGuessAjaxView,
-  UpdateTimeRemainingAjaxView
+  UpdateTimeRemainingAjaxView,
+  StatisticsDetailView
 )
 
 app_name = 'hangman'
@@ -17,4 +18,5 @@ urlpatterns = [
     path('ajax/make-guess/', MakeGuessAjaxView.as_view(), name='make_guess'),
     path('ajax/update-time-remaining/', UpdateTimeRemainingAjaxView.as_view(), name='update_time'),
     path('<int:id>/game-over/', GameFinishedView.as_view(), name='game_over'),
+    path('stats/', StatisticsDetailView.as_view(), name='stats')
 ]

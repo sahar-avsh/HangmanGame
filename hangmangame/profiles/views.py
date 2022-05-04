@@ -50,10 +50,10 @@ class AjaxableResponseMixin(object):
         else:
             return response
 
-class CustomLoginView(SuccessMessageMixin, FormView):
-    template_name = 'hangman/login.html'
+class CustomLoginView(FormView):
+    template_name = 'profiles/login.html'
     form_class = UserLoginForm
-    success_message = 'You have successfully logged in'
+    # success_message = 'You have successfully logged in'
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')

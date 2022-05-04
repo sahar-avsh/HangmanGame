@@ -57,6 +57,32 @@ class AjaxableResponseMixin(object):
 class MainView(TemplateView):
     template_name = 'hangman/main_page.html'
 
+    # def render_to_response(self, context, **response_kwargs):
+    #     """ Allow AJAX requests to be handled more gracefully """
+    #     if self.request.is_ajax():
+    #         unfinished_games = HangmanGame.objects.filter(player=self.request.user.profile).filter(result__isnull=True)
+    #         durations = [game.time_allowed for game in unfinished_games]
+    #         return JsonResponse({'durations': durations}, status=200, content_type='application/json', **response_kwargs)
+    #     else:
+    #         return super().render_to_response(context, **response_kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if request.is_ajax():
+                # context = self.get_context_data()
+                unfinished_games = HangmanGame.objects.filter(player=self.request.user.profile).filter(result__isnull=True)
+                durations = [game.time_allowed.total_seconds() * 1000 for game in unfinished_games]
+                ids = [game.id for game in unfinished_games]
+                # print(durations)
+                # return render(request, self.template_name, context)
+                return JsonResponse({'durations': durations, 'ids': ids}, status=200, content_type='application/json')
+            else:
+                context = self.get_context_data()
+                return render(request, self.template_name, context)
+        else:
+            # context = self.get_context_data()
+            return render(request, self.template_name, {})
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
@@ -84,7 +110,7 @@ class StartGameView(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
             count = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty']).count()
             word = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty'])[randint(0, count - 1)]
             form.instance.guess_word = word
-            form.instance.player = self.request.user.profile
+        form.instance.player = self.request.user.profile
         return super().form_valid(form)
 
 class MakeGuessAjaxView(LoginRequiredMixin, View):
@@ -124,12 +150,28 @@ class MakeGuessAjaxView(LoginRequiredMixin, View):
             return JsonResponse({'error': 'You already guessed this letter'}, status=400, content_type='application/json')
 
 class UpdateTimeRemainingAjaxView(LoginRequiredMixin, View):
+    # def post(self, request, *args, **kwargs):
+    #     obj = HangmanGame.objects.get(id=request.POST.get('id'))
+    #     time_remaining = request.POST.get('time_remaining')
+    #     time_remaining_formatted = datetime.timedelta(milliseconds=int(time_remaining))
+    #     obj.time_allowed = time_remaining_formatted
+    #     obj.save()
+    #     return JsonResponse({'saving': 'Done'}, status=200, content_type='application/json')
     def post(self, request, *args, **kwargs):
-        obj = HangmanGame.objects.get(id=request.POST.get('id'))
-        time_remaining = request.POST.get('time_remaining')
-        time_remaining_formatted = datetime.timedelta(milliseconds=int(time_remaining))
-        obj.time_allowed = time_remaining_formatted
-        obj.save()
+        # print(request.POST)
+        for id_ in request.POST.keys():
+            obj = HangmanGame.objects.get(id=int(id_))
+            obj.time_allowed = datetime.timedelta(milliseconds=int(request.POST.get(id_)))
+            obj.save()
+        # for key, value in request.POST.items():
+        #     obj = HangmanGame.objects.get(id=int(request.POST.getlist(key)))
+
+        # object_list = [HangmanGame.objects.get(id=int(id_)) for id_ in request.POST.keys()]
+        # time_remaining_list = []
+        # for index, obj in enumerate(object_list):
+        #     time_remaining_formatted = datetime.timedelta(milliseconds=int(time_remaining_list[index]))
+        #     obj.time_allowed = time_remaining_formatted
+        #     obj.save()
         return JsonResponse({'saving': 'Done'}, status=200, content_type='application/json')
 
 class GameDetailView(LoginRequiredMixin, DetailView):

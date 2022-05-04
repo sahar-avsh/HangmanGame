@@ -25,22 +25,34 @@
 
     {% load get_item %}
 
-    <div class="row" id="id-games" data-id="{{ids}}" style="margin-left: 10px;">
-        {% for game in unfinished_games %}
-            <div class="col-sm-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"> Current status: {{statuses|index:forloop.counter0|upper}} </h5>
-                        <p class="card-text">Guesses remaining: {{game.guesses_allowed}} </p>
-                        {% comment %} <p class="card-text">Time remaining: {{game.time_allowed}} </p> {% endcomment %}
-                        <p id="id-time-remaining-{{game.id}}" class="card-text">Time remaining: <span id="id-time-{{game.id}}"> {{game.time_allowed}} </span> </p>
-                        <a href="{% url 'hangman:play_game' id=game.id %}" class="btn btn-primary">Continue Playing!</a>
-                    </div>
+    {% csrf_token %}
+
+    {% if request.user.is_authenticated %}
+
+        <div class="spinner">
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
                 </div>
             </div>
-        {% empty %}
-        {% endfor %}
-    </div>
-    
+        </div>
 
+        <div class="row" style="display: none;" id="id-games" data-id="{{ids}}" update-time-remaining-url="{% url 'hangman:update_time' %}" style="margin-left: 10px;">
+            {% for game in unfinished_games %}
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"> Current status: {{statuses|index:forloop.counter0|upper}} </h5>
+                            <p class="card-text">Guesses remaining: {{game.guesses_allowed}} </p>
+                            {% comment %} <p class="card-text">Time remaining: {{game.time_allowed}} </p> {% endcomment %}
+                            <p id="id-time-remaining-{{game.id}}" data-id="{{game.time_allowed}}" class="card-text">Time remaining: <span id="id-time-{{game.id}}"> {{game.time_allowed}} </span> </p>
+                            <a href="{% url 'hangman:play_game' id=game.id %}" class="btn btn-primary">Continue Playing!</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+            {% endfor %}
+        </div>
+    
+    {% endif %}
 {% endblock content %}

@@ -8,10 +8,11 @@
 {% block js %}
     <script src="{% static 'hangman/render_forms.js' %}"></script>
     <script src="{% static 'hangman/start_game_form.js' %}"></script>
+    <script src="{% static 'hangman/main_page.js' %}"></script>
 {% endblock js %}
 
 {% block content %}
-    <div class="jumbotron">
+    <div class="jumbotron" style="background-color: lightblue;">
         <h1 class="display-4">Welcome to the HangPerson Game!</h1>
         <p class="lead">Please don't let our person hang!</p>
         <hr class="my-4">
@@ -21,4 +22,25 @@
             <li>You cannot have more than 6 guesses per game, unfortunately, our Person doesn't have that many limbs</li>
         </ul>
     </div>
+
+    {% load get_item %}
+
+    <div class="row" id="id-games" data-id="{{ids}}" style="margin-left: 10px;">
+        {% for game in unfinished_games %}
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"> Current status: {{statuses|index:forloop.counter0|upper}} </h5>
+                        <p class="card-text">Guesses remaining: {{game.guesses_allowed}} </p>
+                        {% comment %} <p class="card-text">Time remaining: {{game.time_allowed}} </p> {% endcomment %}
+                        <p id="id-time-remaining-{{game.id}}" class="card-text">Time remaining: <span id="id-time-{{game.id}}"> {{game.time_allowed}} </span> </p>
+                        <a href="{% url 'hangman:play_game' id=game.id %}" class="btn btn-primary">Continue Playing!</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+    
+
 {% endblock content %}

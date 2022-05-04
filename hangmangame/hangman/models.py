@@ -40,6 +40,7 @@ class HangmanGame(models.Model):
         (WIN, 'WON'),
         (LOSS, 'LOST')
     )
+    player = models.ForeignKey("profiles.Profile", on_delete=models.CASCADE, related_name='games', null=True)
     guess_word = models.CharField(max_length=100)
     time_allowed = models.DurationField(null=True)
     guesses_allowed = models.IntegerField(default=6, validators=[

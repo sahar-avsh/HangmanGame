@@ -6,3 +6,12 @@
     height: 700px;
     margin-left: 23%;
 }
+
+.won {
+    background-image: url("1.jpg");
+    background-repeat: no-repeat;
+    text-align: center;
+    width: 900px;
+    height: 700px;
+    margin-left: 23%;
+}

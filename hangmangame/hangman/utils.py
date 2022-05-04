@@ -30,7 +30,7 @@ def classify_guessed_letters(guessed_letters, word):
 
 def update_guesses_remaining(guesses_remaining, word, letter):
     if letter not in word:
-        guesses_remaining = guesses_remaining - 1
+        guesses_remaining -= 1
     return guesses_remaining
 
 def serve_correct_image(guesses_remaining):

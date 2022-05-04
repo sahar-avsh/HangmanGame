@@ -1,27 +1,37 @@
 $(document).ready(function() {
-    if (localStorage.getItem("image-number")) {
-        num = localStorage.getItem("image-number");
-        $("#id-hangman-status-1").hide();
-        $("#id-hangman-status-" + num.toString()).show();
-    } else {
-        localStorage.setItem("image-number", 1);
-    }
+    // if (localStorage.getItem("image-number")) {
+    //     num = localStorage.getItem("image-number");
+    //     $("#id-hangman-status-1").hide();
+    //     $("#id-hangman-status-" + num.toString()).show();
+    // } else {
+    //     localStorage.setItem("image-number", 1);
+    // }
+    var obj = {"6": "1", "5": "2", "4": "3", "3": "4", "2": "5", "1": "6", "0": "7"}
+    var image_status = $("#id-guess-remaining").attr("remaining-guesses");
+    $("#id-hangman-status-" + obj[image_status]).show();
 })
 
 $(document).on('click', '.btn-primary', function(e) {
     var l = $(this).attr('id');
+    var id = $(this).attr('object-id');
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
     $.ajax({
-        type: 'GET',
-        url: $(this).attr('update-letters-url'),
+        type: 'POST',
+        headers: {'X-CSRFToken': csrftoken},
+        url: $(this).attr('make-guess-url'),
         data: {
-            'letter': l
+            'letter': l,
+            'id': id
         },
         success: function(data) {
             if (data.is_game_finished) {
-                //$(".main").html("YOU SAVED THE PERSON!");
+                // $(".main").html("YOU SAVED THE PERSON!");
                 window.location.href = $("#id-game-over").attr("href");
-                localStorage.clear();
-            } else {
+                localStorage.removeItem("duration#" + String(id));
+            }
+            //     // localStorage.clear();
+            // } else {
+            // if (!data.is_game_finished) {
                 // window.location.reload();
                 document.getElementById(l).style.display = "none";
                 $("#id-word-status").html(data.current_status.toUpperCase());
@@ -31,7 +41,7 @@ $(document).on('click', '.btn-primary', function(e) {
                 }
                 
                 $("#id-hangman-status-" + data.image).show();
-                localStorage.setItem("image-number", data.image);
+                // localStorage.setItem("image-number", data.image);
 
                 $("#id-ajax").html("");
                 $("#id-used-letters-on-refresh").html("");
@@ -43,7 +53,7 @@ $(document).on('click', '.btn-primary', function(e) {
                 }
 
                 $("#id-guess-remaining").html("Guesses remaining: " + data.guesses_remaining);
-            }
+            // }
             
             // $("#" + l).hide();
             // console.log(data);

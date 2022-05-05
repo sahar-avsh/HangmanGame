@@ -1,7 +1,6 @@
 {% load crispy_forms_tags %}
 
 <div id="id-container-form" class="container-form">
-    <h5>Start a Game</h5>
     <form id="id-start-game-form" action="{% url 'hangman:start_game' %}" method='POST'>{% csrf_token %}
         <div class="word-source">
             {{form.word_source|as_crispy_field}}

@@ -6,6 +6,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'hangman/main_page.css' %}">
 {% endblock styles %}
 {% block js %}
+    <script>
+        if ($(".alert").length) {
+            $(".alert").fadeTo(2000, 500).slideUp(500, function() {
+                $(".alert").slideUp(500);
+            });
+        }
+    </script>
     <script src="{% static 'hangman/render_forms.js' %}"></script>
     <script src="{% static 'hangman/render_stats.js' %}"></script>
     <script src="{% static 'hangman/start_game_form.js' %}"></script>

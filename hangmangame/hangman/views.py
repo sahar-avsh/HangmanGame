@@ -71,7 +71,7 @@ class MainView(TemplateView):
             if request.is_ajax():
                 # context = self.get_context_data()
                 unfinished_games = HangmanGame.objects.filter(player=self.request.user.profile).filter(result__isnull=True)
-                durations = [game.time_allowed.total_seconds() * 1000 for game in unfinished_games]
+                durations = [game.time_allowed.total_seconds() * 1000 if game.time_allowed is not None else None for game in unfinished_games]
                 ids = [game.id for game in unfinished_games]
                 # print(durations)
                 # return render(request, self.template_name, context)
@@ -106,6 +106,7 @@ class StartGameView(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
         return super().post(self.request, *args, **kwargs)
 
     def form_valid(self, form):
+        print(form.cleaned_data)
         if form.cleaned_data['word_source'] == 'D':
             count = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty']).count()
             word = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty'])[randint(0, count - 1)]

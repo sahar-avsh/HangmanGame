@@ -106,7 +106,6 @@ class StartGameView(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
         return super().post(self.request, *args, **kwargs)
 
     def form_valid(self, form):
-        print(form.cleaned_data)
         if form.cleaned_data['word_source'] == 'D':
             count = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty']).count()
             word = HangmanWord.objects.filter(difficulty=form.cleaned_data['word_difficulty'])[randint(0, count - 1)]

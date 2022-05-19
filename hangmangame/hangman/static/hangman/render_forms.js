@@ -89,8 +89,9 @@ $(document).on('submit', '#id-register-form', function(e) {
       window.location.reload();
     },
     error: function(data) {
+      $('#id-register-form [id^="id-error-div"]').remove();
       $.each(data.responseJSON.status, function(index, value) {
-        $("#id-error-div-" + index).remove();
+        
         var div_error_signup = document.createElement("div");
         $(div_error_signup).attr('id', 'id-error-div-' + index);
         $(div_error_signup).css('margin-bottom', '0px');
@@ -121,13 +122,25 @@ $(document).on('submit', '#id-start-game-form', function(e) {
       window.location.href = data.url;
     },
     error: function(data) {
-      console.log(data);
-      var div_error = document.createElement("div");
-      $(div_error).css('margin-bottom', '0px');
-      $(div_error).text(data.responseJSON.guesses_allowed[0]);
-      div_error.classList.add("alert");
-      div_error.classList.add("alert-dark");
-      $('.container-form').append(div_error);
+      $('#id-start-game-form [id^="id-error"]').remove();
+
+      $.each(data.responseJSON, function(key, value) {
+
+        var div_error = document.createElement("div");
+        $(div_error).attr('id', 'id-error-' + key);
+        $(div_error).css('margin-bottom', '0px');
+        div_error.classList.add("alert");
+        div_error.classList.add("alert-dark");
+
+        for (i = 0; i < value.length; i++) {
+          var p = document.createElement("p");
+          $(p).css('margin-bottom', '0px');
+          p.append(value[i] + '\n');
+          $(div_error).append(p);
+        }
+
+        $('#id-' + key).append(div_error);
+      });
     }
   });
 });

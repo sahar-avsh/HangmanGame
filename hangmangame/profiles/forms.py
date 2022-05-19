@@ -66,6 +66,14 @@ class UserRegisterForm(UserCreationForm):
 
     return user
 
+  def clean(self):
+    cleaned_data = super().clean()
+    email = cleaned_data.get('email')
+    try:
+      user = User.objects.get(email=email)
+      self.add_error('email', "A profile with this email already exists.")
+    except (User.DoesNotExist):
+      return cleaned_data
 class UserLoginForm(AuthenticationForm):
   class Meta:
     model = User

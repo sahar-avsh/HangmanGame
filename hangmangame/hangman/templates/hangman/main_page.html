@@ -44,7 +44,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title"> Current status: {{statuses|index:forloop.counter0|upper}} </h5>
+                            <h5 class="card-title"> Current status: <span style="word-spacing: 15px; letter-spacing: 5px;"> {{statuses|index:forloop.counter0|upper}} </span> </h5>
                             <p class="card-text">Guesses remaining: {{game.guesses_allowed}} </p>
                             {% comment %} <p class="card-text">Time remaining: {{game.time_allowed}} </p> {% endcomment %}
                             <p id="id-time-remaining-{{game.id}}" data-id="{{game.time_allowed}}" class="card-text">Time remaining: <span id="id-time-{{game.id}}"> {{game.time_allowed}} </span> </p>

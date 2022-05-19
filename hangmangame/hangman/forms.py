@@ -2,6 +2,7 @@ from django import forms
 
 from .models import HangmanGame, HangmanWord
 
+import re
 class HangmanGameModelForm(forms.ModelForm):
     user_provided = 'U'
     db_provided = 'D'
@@ -63,3 +64,9 @@ class HangmanGameModelForm(forms.ModelForm):
         self.fields['guesses_allowed'].widget.attrs['name'] = 'guesses_allowed'
         self.fields['guesses_allowed'].widget.attrs['placeholder'] = 'Leave blank if unlimited'
         self.fields['guesses_allowed'].required = False
+    
+    def clean_guess_word(self):
+        word = self.data.get('guess_word').lower()
+        pattern = re.search("[^A-Za-z\s]", word)
+        if pattern:
+            raise forms.ValidationError("Word can only include ASCII characters.")

@@ -23,7 +23,7 @@
 {% comment %} <a id="id-play-game" href="{% url 'hangman:play_game' id=object.id %}"></a> {% endcomment %}
     <div class="main">
         <div class="left">
-            <h2 id="id-word-status" style="font-size: 60px;"> {{ current_status|upper }} </h2>
+            <h2 id="id-word-status" style="font-size: 60px; word-spacing: 30px; letter-spacing: 5px;"> {{ current_status|upper }} </h2>
 
             {% comment %} <div class="buttons">
                 <button class="btn btn-info" id="id-timer" data-time-allowed="{{object.time_allowed}}">Start Timer!</button>

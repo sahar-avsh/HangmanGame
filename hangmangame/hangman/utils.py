@@ -1,7 +1,7 @@
 import string
 
 def is_finished(guessed_letters, word, guesses_remaining):
-    is_guessed = set(word.lower()).issubset(set(guessed_letters.lower()))
+    is_guessed = set(word.lower().replace(' ', '')).issubset(set(guessed_letters.lower()))
     is_out_of_guesses = guesses_remaining == 0
     is_over = is_guessed or is_out_of_guesses
     return is_over, is_guessed
@@ -9,10 +9,10 @@ def is_finished(guessed_letters, word, guesses_remaining):
 def get_current_status(guessed_letters, word):
     status = ''
     for letter in word.lower():
-        if letter in guessed_letters.lower():
+        if letter in guessed_letters.lower() or letter == ' ':
             status += letter
         else:
-            status += ' __ '
+            status += '_'
     return status
 
 def get_available_letters(guessed_letters):

@@ -1,15 +1,15 @@
 import string
 
 def is_finished(guessed_letters, word, guesses_remaining):
-    is_guessed = set(word).issubset(set(guessed_letters))
+    is_guessed = set(word.lower()).issubset(set(guessed_letters.lower()))
     is_out_of_guesses = guesses_remaining == 0
     is_over = is_guessed or is_out_of_guesses
     return is_over, is_guessed
 
 def get_current_status(guessed_letters, word):
     status = ''
-    for letter in word:
-        if letter in guessed_letters:
+    for letter in word.lower():
+        if letter in guessed_letters.lower():
             status += letter
         else:
             status += ' __ '
@@ -17,19 +17,19 @@ def get_current_status(guessed_letters, word):
 
 def get_available_letters(guessed_letters):
     all_letters = string.ascii_lowercase
-    return [letter for letter in all_letters if letter not in guessed_letters]
+    return [letter for letter in all_letters if letter not in guessed_letters.lower()]
 
 def classify_guessed_letters(guessed_letters, word):
     hit, miss = [], []
-    for letter in guessed_letters:
-        if letter in word:
+    for letter in guessed_letters.lower():
+        if letter in word.lower():
             hit.append(letter)
         else:
             miss.append(letter)
     return hit, miss
 
 def update_guesses_remaining(guesses_remaining, word, letter):
-    if letter not in word:
+    if letter.lower() not in word.lower():
         guesses_remaining -= 1
     return guesses_remaining
 

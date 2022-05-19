@@ -23,4 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('profiles.urls')),
     path('', include('hangman.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )

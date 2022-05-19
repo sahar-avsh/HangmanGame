@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,django,python,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,django,python,visualstudiocode
 
-*words.txt
+# *words.txt
 
 ### Data volume Docker ###
 *data

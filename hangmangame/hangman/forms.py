@@ -2,6 +2,8 @@ from django import forms
 
 from .models import HangmanGame, HangmanWord
 
+from .widgets import SplitDurationWidget
+
 import re
 class HangmanGameModelForm(forms.ModelForm):
     user_provided = 'U'
@@ -51,8 +53,8 @@ class HangmanGameModelForm(forms.ModelForm):
             'placeholder': 'Enter a word'})
         self.fields['guess_word'].required = False
 
-        self.fields['time_allowed'].widget = forms.TimeInput(attrs={
-            'type': 'time',
+        self.fields['time_allowed'].widget = SplitDurationWidget(attrs={
+            'type': 'text',
             'id': 'id-time_allowed-field',
             'class': 'time_allowed-field',
             'name': 'time_allowed'})
@@ -70,3 +72,14 @@ class HangmanGameModelForm(forms.ModelForm):
         pattern = re.search("[^A-Za-z\s]", word)
         if pattern:
             raise forms.ValidationError("Word can only include ASCII characters.")
+
+    def clean_time_allowed(self):
+        h = self.data.get('time_allowed_hours') if self.data.get('time_allowed_hours') != '' else 0
+        m = self.data.get('time_allowed_minutes') if self.data.get('time_allowed_minutes') != '' else 0
+        s = self.data.get('time_allowed_seconds') if self.data.get('time_allowed_seconds') != '' else 0
+        try:
+            if any([int(i) < 0 for i in [h, m, s]]):
+                raise forms.ValidationError("Duration cannot be negative.")
+        except (ValueError):
+            raise forms.ValidationError("Please input integers only.")
+        return '{}:{}:{}'.format(h, m, s)

@@ -4,6 +4,7 @@
     <form id="id-login-form" action="{% url 'profiles:login' %}" method='POST'>{% csrf_token %}
         {{form|crispy}}
         <input id="id-submit-button" type='submit' class='btn btn-success' value='Login'/>
+        <button class="btn btn-secondary"><a id="id-password-reset" href="{% url 'profiles:password_reset' %}">Forgot password!</a></button>
     </form>
 </div>
 
@@ -11,5 +12,10 @@
     .btn {
         margin-top: 5px;
         margin-bottom: 5px;
+    }
+
+    #id-password-reset {
+        text-decoration: none;
+        color: white;
     }
 </style>

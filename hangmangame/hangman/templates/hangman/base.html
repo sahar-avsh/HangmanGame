@@ -39,8 +39,10 @@
                     <div id="id-stats-fields" class="stats-fields" style="display: none;"></div>
 
                     <li class="nav-item" style="float:right">
-                        <a class="nav-link"> Welcome {{request.user.username}} </a>
+                        <a class="nav-link" id="id-profile-button" href="{% url 'profiles:profile_detail' id=request.user.profile.id %}"> Welcome {{request.user.username}} </a>
                     </li>
+                    <div id="id-profile-fields" class="profile-fields" style="display: none;"></div>
+
                     <li class="nav-item" style="float:right">
                         <a class="nav-link" href="{% url 'profiles:logout' %}"> Logout </a>
                     </li>

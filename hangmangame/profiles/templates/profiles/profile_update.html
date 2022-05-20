@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+<form id="id-profile-update-form" action="{% url 'profiles:profile_update' id=object.id %}" enctype="multipart/form-data"> {% csrf_token %}
+    <div class="photo">
+        {{form.image|as_crispy_field}}
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="clear-image" id="inlineRadio1" value="option1">
+            <label class="form-check-label" for="inlineRadio1">Clear Image</label>
+        </div>
+    </div>
+
+    <div class="f-name">
+        {{form.f_name|as_crispy_field}}
+    </div>
+
+    <div class="l-name">
+        {{form.l_name|as_crispy_field}}
+    </div>
+
+    <input id="id-profile-update-submit-button" type='submit' class='btn btn-success' value='Save'/>
+    <button id="id-profile-update-cancel" class="btn btn-secondary">Cancel</button>
+</form>
+
+<style>
+    .photo, .f-name, .l-name {
+        margin-bottom: 3px;
+    }
+
+    .control-label {
+        margin-bottom: 0px;
+        font-weight: 500;
+    }
+</style>

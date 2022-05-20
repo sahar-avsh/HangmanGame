@@ -178,7 +178,31 @@ class StatisticsDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'hangman/game_statistics.html'
 
     def calc_total_score(self, wins, losses):
-        pass
+        """Score logic takes into account word length, number of unique letters in a word, guesses remaining, duration remaining"""
+        logic_dict = {
+            'word_length': 2,
+            'num_of_uniq_letters': 3,
+            'guesses_remaining': 5,
+            'time_remaining': 1
+        }
+        total_score = 0
+        for win in wins:
+            word = win.guess_word.replace(' ', '')
+            time_remaining = win.time_allowed.total_seconds() if win.time_allowed is not None else 0
+            total_score += len(word) * logic_dict['word_length'] + \
+                            len(set(word)) * logic_dict['num_of_uniq_letters'] + \
+                            win.guesses_allowed * logic_dict['guesses_remaining'] + \
+                            time_remaining / 60 * logic_dict['time_remaining']
+
+        for loss in losses:
+            if loss.get_guess_word_difficulty() == 'H':
+                total_score -= 20
+            elif loss.get_guess_word_difficulty() == 'M':
+                total_score -= 15
+            else:
+                total_score -= 10
+
+        return total_score if total_score >= 0 else 0
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

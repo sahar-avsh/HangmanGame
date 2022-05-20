@@ -1,10 +1,10 @@
-#id-login-button {
+#id-login-button, #id-register-button, #id-start-game-button, #id-statistics-button, #id-profile-button {
   position: relative;
   display: inline-block;
   cursor: pointer;
 }
 
-#id-register-button {
+/* #id-register-button {
   position: relative;
   display: inline-block;
   cursor: pointer;
@@ -20,9 +20,9 @@
   position: relative;
   display: inline-block;
   cursor: pointer;
-}
+} */
 
-.login-form-fields {
+.login-form-fields, .register-form-fields, .start-game-form-fields, .stats-fields, .profile-fields {
   margin-top: 50px;
   position: absolute;
   z-index: 999;
@@ -32,7 +32,7 @@
   padding: 5px;
 }
 
-.register-form-fields {
+/* .register-form-fields {
   margin-top: 50px;
   position: absolute;
   z-index: 999;
@@ -60,4 +60,4 @@
   background-color: #f1f1f1;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   padding: 5px;
-}
+} */

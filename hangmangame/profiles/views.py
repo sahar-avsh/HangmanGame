@@ -89,7 +89,7 @@ class CustomSignUpView(SuccessMessageMixin, AjaxableResponseMixin, CreateView):
         form_kwargs['request'] = self.request
         return form_kwargs
 
-class CustomResetPasswordView(SuccessMessageMixin, PasswordResetView):
+class CustomResetPasswordView(SuccessMessageMixin, AjaxableResponseMixin, PasswordResetView):
     template_name = 'profiles/password_reset.html'
     email_template_name = 'profiles/password_reset_email.html'
     subject_template_name = 'profiles/password_reset_subject.txt'
@@ -97,23 +97,35 @@ class CustomResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       "if an account exists with the email you entered, you should receive them shortly." \
                       " If you don't receive an email, " \
                       "please make sure you've entered the address you had registered with, and check your spam folder."
-    success_url = reverse_lazy('main_page')
+    success_url = reverse_lazy('hangman:main_page')
 
 
-class ProfileUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, AjaxableResponseMixin, UpdateView):
     template_name = 'profiles/profile_update.html'
     form_class = ProfileModelForm
-    success_message = 'Your profile was updated succesfully'
 
     def get_object(self):
         id_ = self.kwargs.get('id')
         return get_object_or_404(Profile, id=id_)
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        data = form.cleaned_data
+        self.object = form.save(commit=False)
+        if data.get('clear_image'):
+            self.object.image = None
+        self.object.save()
+        return JsonResponse({'update': 'done'}, status=200)
 
     def dispatch(self, request, *args, **kwargs):
         object = Profile.objects.get(id=self.kwargs.get('id'))
         if request.user.profile != object:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+class ProfileDetailView(LoginRequiredMixin, AjaxableResponseMixin, DetailView):
+    template_name = 'profiles/profile_detail.html'
+    model = Profile
+
+    def get_object(self):
+        id_ = self.kwargs.get('id')
+        return get_object_or_404(Profile, id=id_)

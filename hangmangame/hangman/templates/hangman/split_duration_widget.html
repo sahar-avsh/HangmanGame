@@ -1,0 +1,40 @@
+<div class="input-group" id="id-duration-input">
+    <input type=" {{widget.type}} " name="{{widget.name}}_hours" class="form-control" placeholder="hours">
+    <div class="input-group-append">
+        <span class="input-group-text">H</span>
+    </div>
+
+    <input type=" {{widget.type}} " name="{{widget.name}}_minutes" class="form-control" placeholder="mins">
+    <div class="input-group-append">
+        <span class="input-group-text">M</span>
+    </div>
+
+    <input type=" {{widget.type}} " name="{{widget.name}}_seconds" class="form-control" placeholder="secs">
+    <div class="input-group-append">
+        <span class="input-group-text">S</span>
+    </div>
+</div>
+
+<style>
+    .input-group {
+        width: 250px;
+    }
+
+    .input-group-text {
+        padding-right: 6px;
+        padding-left: 6px;
+        height: 30px;
+        color: black;
+    }
+
+    .form-control {
+        height: 30px;
+        width: 50px;
+        padding-right: 6px;
+        padding-left: 6px;
+    }
+
+    input {
+        color: black !important;
+    }
+</style>

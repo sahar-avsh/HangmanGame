@@ -2,23 +2,23 @@
 
 <div id="id-container-form" class="container-form">
     <form id="id-start-game-form" action="{% url 'hangman:start_game' %}" method='POST'>{% csrf_token %}
-        <div class="word-source">
+        <div class="word_source">
             {{form.word_source|as_crispy_field}}
         </div>
 
-        <div class="word-difficulty" id="id-word-difficulty">
+        <div class="word_difficulty" id="id-word-difficulty">
             {{form.word_difficulty|as_crispy_field}}
         </div>
 
-        <div class="guess-word" id="id-guess_word" style="display: none;">
+        <div class="guess_word" id="id-guess_word" style="display: none;">
             {{form.guess_word|as_crispy_field}}
         </div>
 
-        <div class="time-allowed">
+        <div class="time_allowed">
             {{form.time_allowed|as_crispy_field}}
         </div>
 
-        <div class="guesses-allowed" id="id-guesses_allowed">
+        <div class="guesses_allowed" id="id-guesses_allowed">
             {{form.guesses_allowed|as_crispy_field}}
         </div>
         <input id="id-submit-button" type='submit' class='btn btn-success' value='Start'/>
@@ -29,5 +29,19 @@
     .btn {
         margin-top: 5px;
         margin-bottom: 5px;
+        color: white !important;
+    }
+
+    .help-block {
+        margin-bottom: 0px;
+    }
+
+    .control-label {
+        margin-bottom: 0px;
+        font-weight: 500;
+    }
+
+    .word_source, .word_difficulty, .time_allowed, .guesses_allowed {
+        margin-bottom: 8px;
     }
 </style>

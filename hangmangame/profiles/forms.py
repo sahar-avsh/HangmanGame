@@ -98,11 +98,24 @@ class ProfileModelForm(forms.ModelForm):
   class Meta:
     model = Profile
     fields = [
+        'image',
         'f_name',
         'l_name',
     ]
 
     labels = {
+      'image': 'Picture',
       'f_name': 'First name',
       'l_name': 'Last name',
     }
+
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+
+    self.fields['image'].required = False
+
+  def clean(self):
+    clean_data = super().clean()
+    if 'clear-image' in list(self.data.keys()):
+      clean_data['clear_image'] = True
+    return clean_data

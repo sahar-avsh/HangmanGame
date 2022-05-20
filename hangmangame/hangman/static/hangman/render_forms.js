@@ -113,6 +113,7 @@ $(document).on('submit', '#id-register-form', function(e) {
 
 $(document).on('submit', '#id-start-game-form', function(e) {
   e.preventDefault();
+  console.log($(this).serializeArray());
 
   $.ajax({
     type: "POST",
@@ -139,7 +140,7 @@ $(document).on('submit', '#id-start-game-form', function(e) {
           $(div_error).append(p);
         }
 
-        $('#id-' + key).append(div_error);
+        $('.' + key).append(div_error);
       });
     }
   });

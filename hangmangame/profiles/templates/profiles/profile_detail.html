@@ -1,0 +1,17 @@
+<div class="media">
+    {% if object.image %}
+        <img src="{{ object.image.url }}" class="mr-3" width="60" height="80" alt="...">
+    {% endif %}
+    <div class="media-body">
+        <h5 class="mt-0">{{ object.created_by.username }}</h5>
+        Name: {{ object.f_name }} <br>
+        Surname: {{ object.l_name }}
+    </div>
+    <button class="btn btn-info"><a id="id-profile-update-button" style="text-decoration: none; color: white;" href="{% url 'profiles:profile_update' id=object.id %}">Update</a></button>
+</div>
+
+<style>
+    .mr-3 {
+        margin-right: 5px !important;
+    }
+</style>
